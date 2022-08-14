@@ -3,7 +3,9 @@ Shader "SinaC/SWT/VerticalTransition"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-
+        _Progress("Progress", Range(0, 1)) = 0
+        _Blur("Blur", Range(0, 1)) = 0.1
+        
         /* Necessary for making the shader UI compatible */
         _StencilComp("Stencil Comparison", Float) = 8
         _Stencil("Stencil ID", Float) = 0
@@ -75,6 +77,8 @@ Shader "SinaC/SWT/VerticalTransition"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float4 _ClipRect;
+            float _Blur;
+            float _Progress;
 
             v2f vert (appdata v)
             {
@@ -88,7 +92,18 @@ Shader "SinaC/SWT/VerticalTransition"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = fixed4(1,1,1,1);
+                float alpha = 1;
+                const float halfBlur = _Blur / 2;
+                const float min = _Progress - halfBlur;
+                const float max = _Progress + halfBlur;
+                const float y = (i.uv.y - 0.5) * (1 - _Blur) + 0.5;
+                
+                if(y < min)
+                    alpha = 0;
+                else if(y < max)
+                    alpha = (y - min) / _Blur;
+
+                fixed4 col = fixed4(1,1,1, alpha);
                 col *= i.color;
 
 #ifdef UNITY_UI_CLIP_RECT
