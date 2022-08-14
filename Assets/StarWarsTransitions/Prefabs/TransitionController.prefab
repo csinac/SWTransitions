@@ -72,6 +72,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  transitions:
+  - Type: 0
+    Material: {fileID: 2100000, guid: 148273392b9c1de40889698e6251ae0c, type: 2}
+  - Type: 1
+    Material: {fileID: 2100000, guid: 95e6b0221a70958499dd4418a8fbe6d1, type: 2}
 --- !u!1 &1550374559627029082
 GameObject:
   m_ObjectHideFlags: 0

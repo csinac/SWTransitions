@@ -11,6 +11,13 @@ namespace SinaC.SWT
 
         private Camera src, dest;
         private bool locked;
+
+        private TransitionType[] types = {
+            TransitionType.VerticalSplit,
+            TransitionType.VerticalWipe
+        };
+
+        private bool dropdownOpen = false;
         
         private void Start() {
             A.enabled = true;
@@ -36,9 +43,21 @@ namespace SinaC.SWT
                 if (!locked)
                     Transition(false);
             }
-            if (GUI.Button(new Rect(25, 100, 300, 50), "Switch Camera (reverse)")) {
+            if (GUI.Button(new Rect(25, 85, 300, 50), "Switch Camera (reverse)")) {
                 if (!locked)
                     Transition(true);
+            }
+            
+            if(GUI.Button(new Rect(25, 145, 300, 50), $"Transition: {tc.CurrentTransition}")) {
+                dropdownOpen = !dropdownOpen;
+            }
+            if(dropdownOpen) {
+                for(int i = 0; i < types.Length; i++) {
+                    if (GUI.Button(new Rect(25, 205 + (55 * i), 120, 50), types[i].ToString())) {
+                        dropdownOpen = false;
+                        tc.SetTransitionType(types[i]);
+                    }
+                }
             }
         }
     }

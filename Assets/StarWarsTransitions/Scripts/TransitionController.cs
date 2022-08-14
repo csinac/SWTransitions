@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,11 +11,14 @@ namespace SinaC.SWT
         [SerializeField] private RawImage transitionOverlay;
         [SerializeField] private float transitionTime = 1f;
         [SerializeField] private AnimationCurve transitionCurve = AnimationCurve.Linear(0, 0, 1, 1);
+        [SerializeField] private TransitionType defaultTransition = TransitionType.VerticalWipe;
+        [SerializeField] private TransitionEntry[] transitions;
 
         private float t = float.MaxValue;
         private Camera currentCam = null;
         private RenderTexture rt;
         private Camera target;
+        private TransitionType currentTransition;
 
         public Action OnStart;
         public Action OnComplete;
@@ -22,8 +26,25 @@ namespace SinaC.SWT
         private static readonly int ProgressPropID = Shader.PropertyToID("_Progress");
         private static readonly int ReversePropID = Shader.PropertyToID("_Reverse");
 
+        private Dictionary<TransitionType, Material> transitionDictionary;
+
+        public TransitionType CurrentTransition => currentTransition;
+
         private void Start() {
             transitionCanvas.enabled = false;
+            transitionDictionary = new Dictionary<TransitionType, Material>();
+            foreach (var entry in transitions) {
+                transitionDictionary.Add(entry.Type, Instantiate(entry.Material));
+            }
+            
+            SetTransitionType(defaultTransition);
+        }
+
+        public void SetTransitionType(TransitionType type) {
+            if (transitionDictionary.ContainsKey(type)) {
+                transitionOverlay.material = transitionDictionary[type];
+                currentTransition = type;
+            }
         }
         
         public void Transition(Camera to, Camera from = null, bool reverseDirection = false) {
@@ -58,6 +79,13 @@ namespace SinaC.SWT
                 currentCam.enabled = false;
                 OnComplete?.Invoke();
             }
+        }
+
+        [Serializable]
+        public struct TransitionEntry
+        {
+            public TransitionType Type;
+            public Material Material;
         }
     }
 }
