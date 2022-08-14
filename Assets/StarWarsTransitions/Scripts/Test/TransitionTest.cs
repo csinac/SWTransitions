@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace SinaC.SWT
@@ -22,20 +23,23 @@ namespace SinaC.SWT
             tc.OnComplete += () => locked = false;
         }
 
-        private void Transition() {
-            tc.Transition(dest);
+        private void Transition(bool reverse) {
+            tc.Transition(dest, src, reverse);
 
             Camera temp = src;
             src = dest;
             dest = temp;
         }
 
-        [ContextMenu("TestTransition")]
-        private void TestTransition() {
-            if (locked)
-                return;
-            
-            Invoke(nameof(Transition), 1);
+        private void OnGUI() {
+            if (GUI.Button(new Rect(25, 25, 300, 50), "Switch Camera")) {
+                if (!locked)
+                    Transition(false);
+            }
+            if (GUI.Button(new Rect(25, 100, 300, 50), "Switch Camera (reverse)")) {
+                if (!locked)
+                    Transition(true);
+            }
         }
     }
 }

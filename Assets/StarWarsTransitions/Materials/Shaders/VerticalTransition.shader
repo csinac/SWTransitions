@@ -5,6 +5,7 @@ Shader "SinaC/SWT/VerticalTransition"
         _MainTex ("Texture", 2D) = "white" {}
         _Progress("Progress", Range(0, 1)) = 0
         _Blur("Blur", Range(0, 1)) = 0.1
+        [Toggle]_Reverse("Reverse", float) = 0
         
         /* Necessary for making the shader UI compatible */
         _StencilComp("Stencil Comparison", Float) = 8
@@ -79,6 +80,7 @@ Shader "SinaC/SWT/VerticalTransition"
             float4 _ClipRect;
             float _Blur;
             float _Progress;
+            bool _Reverse;
 
             v2f vert (appdata v)
             {
@@ -96,7 +98,7 @@ Shader "SinaC/SWT/VerticalTransition"
                 const float halfBlur = _Blur / 2;
                 const float min = _Progress - halfBlur;
                 const float max = _Progress + halfBlur;
-                const float y = (i.uv.y - 0.5) * (1 - _Blur) + 0.5;
+                const float y = ((_Reverse ? 1 - i.uv.y : i.uv.y) - 0.5) * (1 - _Blur) + 0.5;
                 
                 if(y < min)
                     alpha = 0;
