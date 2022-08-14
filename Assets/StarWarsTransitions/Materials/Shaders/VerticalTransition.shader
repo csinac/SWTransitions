@@ -104,7 +104,7 @@ Shader "SinaC/SWT/VerticalTransition"
                     alpha = (y - min) / _Blur;
 
                 fixed4 col = fixed4(1,1,1, alpha);
-                col *= i.color;
+                col *= i.color * tex2D (_MainTex, i.uv);
 
 #ifdef UNITY_UI_CLIP_RECT
                 col.a *= UnityGet2DClipping(i.worldPosition.xy, _ClipRect);

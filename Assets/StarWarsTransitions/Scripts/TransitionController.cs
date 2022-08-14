@@ -7,13 +7,16 @@ namespace SinaC.SWT
     public class TransitionController : MonoBehaviour
     {
         [SerializeField] private Canvas transitionCanvas;
-        [SerializeField] private Image transitionOverlay;
+        [SerializeField] private RawImage transitionOverlay;
         [SerializeField] private float transitionTime = 1f;
-        [Space]
-        [SerializeField] private Camera target;
 
         private float t = float.MaxValue;
-        private Camera main = null;
+        private Camera currentCam = null;
+        private RenderTexture rt;
+        private Camera target;
+
+        public Action OnStart;
+        public Action OnComplete;
         
         private static readonly int ProgressPropID = Shader.PropertyToID("_Progress");
 
@@ -21,19 +24,26 @@ namespace SinaC.SWT
             transitionCanvas.enabled = false;
         }
         
-        private void Transition() {
-            t = 0;
+        public void Transition(Camera to) {
+            OnStart?.Invoke();
+            target = to;
+            rt = new RenderTexture(Screen.width, Screen.height, 32);
             transitionCanvas.enabled = true;
+
+            currentCam = Camera.current;
+            currentCam.targetTexture = rt;
+            currentCam.tag = "Untagged";
+            transitionOverlay.texture = rt;
+
+            target.enabled = true;
+            target.tag = "MainCamera";
+            target.targetTexture = null;
+            t = 0;
         }
-        
-        [ContextMenu("TestTransition")]
-        private void TestTransition() {
-            Invoke(nameof(Transition), 1);
-        }
-        
+
         private void Update() {
             if (t < 1) {
-                t += Time.deltaTime;
+                t += Time.deltaTime / transitionTime;
                 transitionOverlay.material.SetFloat(ProgressPropID, Mathf.Clamp(t, 0, 1));
                 CheckComplete();
             }
@@ -42,6 +52,8 @@ namespace SinaC.SWT
         private void CheckComplete() {
             if (t >= 1) {
                 transitionCanvas.enabled = false;
+                currentCam.enabled = false;
+                OnComplete?.Invoke();
             }
         }
     }
