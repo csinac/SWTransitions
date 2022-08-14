@@ -8,9 +8,10 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TransitionPanel
-  m_Shader: {fileID: 4800000, guid: 81f53095a0b574349922068629c66d69, type: 3}
+  m_Shader: {fileID: 4800000, guid: 409247ed337e4c64fb9c57ccf5f4b6fa, type: 3}
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _REVERSE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -58,7 +59,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Blur: 0.05
+    - _Blur: 0.1
     - _BumpScale: 1
     - _ColorMask: 15
     - _Cutoff: 0.5
@@ -71,7 +72,8 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Progress: 1
+    - _Progress: 0
+    - _Reverse: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

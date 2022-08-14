@@ -1,4 +1,4 @@
-Shader "SinaC/SWT/VerticalTransition"
+Shader "SinaC/SWT/VerticalWipe"
 {
     Properties
     {
